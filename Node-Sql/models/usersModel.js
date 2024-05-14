@@ -20,10 +20,11 @@ async function getUserByUserName(userName) {
   }
 }
 
-async function getUserByNamePassword(userName, password) {
+async function getUserByNamePassword(userName) {
   try {
-    const sql = 'SELECT userID, userName, name, email, phone, company,password,street,city,zipcode FROM addresses INNER JOIN users ON addresses.addressID = users.addressID INNER JOIN passwords ON users.passwordID = passwords.passwordID WHERE users.userName = ? AND password = ?';
-    const [rows, fields] = await pool.query(sql, [userName, password]);
+    const sql = 'SELECT userID, userName, name, email, phone, company,password,street,city,zipcode FROM addresses INNER JOIN users ON addresses.addressID = users.addressID INNER JOIN passwords ON users.passwordID = passwords.passwordID WHERE users.userName = ? ';
+    const [rows, fields] = await pool.query(sql, [userName]);
+    console.log(rows[0]);
     return rows[0];
   } catch (err) {
     console.log(err);

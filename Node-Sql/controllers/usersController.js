@@ -1,4 +1,5 @@
 const model = require('../models/usersModel');
+const bcrypt = require('bcrypt');
 
 async function getAllUsers() {
     try {
@@ -18,15 +19,26 @@ async function getUserByUserName(userName) {
 
 async function getUserByNamePassword(userName, password) {
     try {
-        return model.getUserByNamePassword(userName, password)
+        const user = await model.getUserByNamePassword(userName);
+        if (user) {
+            if (bcrypt.compareSync(password, user.password)) {
+                return user;
+            }
+        }
+        else {
+            console.log("Error");
+            throw new Error('User does not exist, please sign up');
+        }
     } catch (err) {
         throw err;
     }
 }
 
+
 async function createUser(userName, password) {
     try {
-        return model.createUser(userName, password);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        return model.createUser(userName, hashedPassword);
     } catch (err) {
         throw err;
     }
